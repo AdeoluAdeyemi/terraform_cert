@@ -25,10 +25,16 @@ locals {
   instance_names = ["web-server", "monitoring-server"]
 }
 
+resource "aws_key_pair" "ssh_key_deployer" {
+  key_name   = "deployer-key"
+  public_key = file("~/.ssh/mac_aws.pub")
+}
+
 resource "aws_instance" "ec2-server" {
   ami   = data.aws_ami.latest_amazon_linux.id
   count = length(local.instance_names)
 
+  key_name = aws_key_pair.ssh_key_deployer.key_name
   instance_type = local.instance_types[count.index]
 
   tags = {
@@ -48,4 +54,35 @@ resource "aws_instance" "ec2-server" {
             EOF
     EOT
   }
+
+  provisioner "file" {
+    content     = "This is a test file for ${self.tags["Name"]} in ${local.environment} environment."
+    destination = "/tmp/test_file_${count.index}.txt"
+
+    connection {
+        type        = "ssh"
+        user        = "ec2-user"
+        private_key = file("~/.ssh/mac_aws")
+        host        = self.public_ip
+    } 
+  }
+
+  provisioner "remote-exec" {
+    inline = [
+      "echo 'Hello from ${self.tags["Name"]} in ${local.environment} environment!' > /tmp/hello_${count.index}.txt",
+      "sudo yum update -y",
+      "sudo yum install -y httpd",
+      "sudo systemctl start httpd",
+      "sudo systemctl enable httpd",
+      "echo '<h1>Hello from ${self.tags["Name"]} in ${local.environment} environment!</h1>' | sudo tee /var/www/html/index.html",
+    ]
+
+    connection {
+        type        = "ssh"
+        user        = "ec2-user"
+        private_key = file("~/.ssh/mac_aws")
+        host        = self.public_ip
+    } 
+  }
+
 }

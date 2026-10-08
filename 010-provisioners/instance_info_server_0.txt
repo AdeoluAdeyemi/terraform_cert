@@ -1,6 +1,6 @@
-Private IP: 172.31.38.239
-Public IP: 18.232.115.88
+Private IP: 172.31.47.180
+Public IP: 54.198.176.242
 Instance Type: t3.micro
-Instance ID: i-00591d80b105172ae
+Instance ID: i-0a8c161d34b3a9611
 Instance Name: web-server
 Environment: dev
