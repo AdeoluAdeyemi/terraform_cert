@@ -1,0 +1,6 @@
+Private IP: 172.31.45.158
+Public IP: 34.230.55.94
+Instance Type: t3.small
+Instance ID: i-0a6f4ff1ca7534773
+Instance Name: monitoring-server
+Environment: dev

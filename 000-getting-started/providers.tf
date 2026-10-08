@@ -1,0 +1,12 @@
+provider "aws" {
+#   profile = "terraform"
+#   region  = var.AWS_DEFAULT_REGION
+#   access_key = var.AWS_ACCESS_KEY_ID
+#   secret_key = var.AWS_SECRET_ACCESS_KEY
+}
+
+# provider "aws" {
+#   alias   = "us_east_1"
+#   #profile = "terraform"
+#   region  = "us-east-1"
+# }
