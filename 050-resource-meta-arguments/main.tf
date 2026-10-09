@@ -21,11 +21,24 @@ data "aws_ami" "latest_amazon_linux" {
 }
 
 resource "aws_instance" "count_example" {
-    count         = 2
+    for_each = {
+        small = "t3.small"
+        micro = "t3.micro"
+    }
+
     ami           = data.aws_ami.latest_amazon_linux.id
-    instance_type = local.instance_types[count.index]
+    instance_type = each.value
 
     tags = {
-        Name = "Server ${count.index + 1}"
+        Name = "Server ${each.key}"
     }
+}
+
+output "instance_ip" {
+    # value = {
+    #     for instance in aws_instance.count_example : instance.tags["Name"] => instance.public_ip
+    # }
+
+
+    value = values(aws_instance.count_example)[*].public_ip
 }
